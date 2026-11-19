@@ -1,0 +1,520 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> </title>
+
+    <style>
+        /* GENERAL DESIGN */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #bdeaff, #69c5f5, #347fc4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* FLOATING BACKGROUND ELEMENTS */
+        .floating {
+            position: fixed;
+            top: -30px;
+            font-size: 20px;
+            animation: fall linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 0;
+            }
+            15% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: white;
+            font-size: 32px;
+            margin-bottom: 15px;
+            text-shadow: 2px 3px 5px rgba(0,0,0,0.15);
+        }
+
+        p {
+            color: #ffffff;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* ENVELOPE DESIGN */
+        .envelope {
+            width: 230px;
+            height: 155px;
+            background: #eaf7ff;
+            margin: 55px auto 30px;
+            position: relative;
+            border-radius: 5px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .envelope::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-left: 115px solid transparent;
+            border-right: 115px solid transparent;
+            border-top: 90px solid #8acdf0;
+            transform-origin: top;
+            transition: transform 0.8s ease;
+            z-index: 3;
+        }
+
+        .envelope::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            border-left: 115px solid #c6eaff;
+            border-right: 115px solid #c6eaff;
+            border-top: 78px solid transparent;
+            border-bottom: 77px solid #a9ddf8;
+            z-index: 2;
+        }
+
+        .envelope.open::before {
+            transform: rotateX(180deg);
+        }
+
+        .heart {
+            position: absolute;
+            top: 65px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            z-index: 4;
+        }
+
+        /* BUTTONS */
+        button {
+            border: none;
+            padding: 13px 28px;
+            border-radius: 30px;
+            background: white;
+            color: #328bc3;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        button:hover {
+            background: #e1f5ff;
+            transform: scale(1.05);
+        }
+
+        /* BIRTHDAY LETTER */
+        .letter {
+            background: rgba(255,255,255,0.95);
+            padding: 35px 25px;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-top: 25px;
+        }
+
+        .letter h1 {
+            color: #388fc5;
+            font-size: 30px;
+            margin-bottom: 20px;
+            text-shadow: none;
+        }
+
+        .letter p {
+            color: #526b7c;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .letter .decoration {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .letter button {
+            background: #58b5e8;
+            color: white;
+        }
+
+        .letter button:hover {
+            background: #368fc5;
+        }
+
+        /* FLOWER SCREEN */
+        .flower-title {
+            color: white;
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .flower-area {
+            height: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* FLOWER STEM */
+        .stem {
+            position: absolute;
+            width: 8px;
+            height: 130px;
+            background: linear-gradient(to right, #318b50, #72c779);
+            top: 155px;
+            border-radius: 10px;
+            transform-origin: top;
+            animation: growStem 1.5s ease forwards;
+            transform: scaleY(0);
+        }
+
+        @keyframes growStem {
+            to {
+                transform: scaleY(1);
+            }
+        }
+
+        /* FLOWER LEAVES */
+        .leaf {
+            position: absolute;
+            width: 35px;
+            height: 18px;
+            background: #54b96b;
+            border-radius: 100% 0 100% 0;
+        }
+
+        .leaf.left {
+            top: 225px;
+            left: calc(50% - 38px);
+            transform: rotate(15deg);
+        }
+
+        .leaf.right {
+            top: 255px;
+            left: calc(50% + 5px);
+            transform: rotate(80deg);
+        }
+
+        /* FLOWER PETALS */
+        .flower {
+            position: absolute;
+            top: 35px;
+            left: 50%;
+            width: 130px;
+            height: 130px;
+            transform: translateX(-50%) scale(0);
+            animation: bloom 1.5s ease 0.8s forwards;
+        }
+
+        @keyframes bloom {
+            to {
+                transform: translateX(-50%) scale(1);
+            }
+        }
+
+        .petal {
+            position: absolute;
+            width: 48px;
+            height: 65px;
+            background: linear-gradient(135deg, #ffb4d2, #f45c9b);
+            border-radius: 50% 50% 45% 45%;
+            top: 0;
+            left: 41px;
+            transform-origin: 24px 65px;
+        }
+
+        .petal:nth-child(1) {
+            transform: rotate(0deg);
+        }
+
+        .petal:nth-child(2) {
+            transform: rotate(60deg);
+        }
+
+        .petal:nth-child(3) {
+            transform: rotate(120deg);
+        }
+
+        .petal:nth-child(4) {
+            transform: rotate(180deg);
+        }
+
+        .petal:nth-child(5) {
+            transform: rotate(240deg);
+        }
+
+        .petal:nth-child(6) {
+            transform: rotate(300deg);
+        }
+
+        .flower-center {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, #fff3a6, #f6b83e);
+            border-radius: 50%;
+            top: 45px;
+            left: 45px;
+            z-index: 2;
+            box-shadow: 0 0 12px rgba(255,220,100,0.8);
+        }
+
+        .flower-message {
+            margin-top: 0;
+            color: white;
+            font-size: 17px;
+            padding: 0 15px;
+        }
+
+        .flower-message span {
+            display: block;
+            font-size: 25px;
+            margin-top: 10px;
+        }
+
+        /* SMALL SCREEN DESIGN */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 27px;
+            }
+
+            .letter {
+                padding: 28px 18px;
+            }
+
+            .letter h1 {
+                font-size: 25px;
+            }
+
+            .letter p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- FLOATING ELEMENTS -->
+    <div id="floating-elements"></div>
+
+    <div class="container">
+
+        <!-- SCREEN 1: ENVELOPE -->
+        <div class="screen active" id="envelope-screen">
+
+            <h1>♡</h1>
+            <p>Pinapabigay daw ni Boss.</p>
+
+            <div class="envelope" id="envelope">
+                <div class="heart">💙</div>
+            </div>
+
+            <button onclick="openEnvelope()">Open Me ♡</button>
+
+        </div>
+
+        <!-- SCREEN 2: BIRTHDAY MESSAGE -->
+        <div class="screen" id="message-screen">
+
+            <div class="letter">
+
+                <div class="decoration">🎂 🎈 🎉</div>
+
+                <h1>Happy Birthday</h1>
+
+                <!-- EDIT YOUR BIRTHDAY MESSAGE HERE -->
+                <p>
+                    Happy Birthday, Joyce
+                    <br><br>
+                    i just wanna tell you that your amazing person that I've met, and just so you know I'm so grateful that i met you.and I'm so veryyyyy grateful I got to know you
+                    i wish you the best in your birthday and 
+                    i hope you're belessed and achieve the things you want to achieve.
+                    
+                    <br><br>
+                    wishing you all the happiness in the world, i hope u find what u are looking for.
+                    and u live no regrets. I'm always rooting for you. 
+                    <br><br>
+                    always remember how incredible u are. take care of yourself alwayss!
+                    enjoy your day todayy, bossing! 
+                </p>
+
+                <button onclick="openFlower()">
+                    Open Your Surprise ♡
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- SCREEN 3: FLOWER SURPRISE -->
+        <div class="screen" id="flower-screen">
+
+            <h1 class="flower-title">A Flower For You! 🌸</h1>
+
+            <div class="flower-area">
+
+                <div class="stem"></div>
+
+                <div class="leaf left"></div>
+                <div class="leaf right"></div>
+
+                <div class="flower">
+
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+
+                    <div class="flower-center"></div>
+
+                </div>
+
+            </div>
+
+            <!-- EDIT YOUR FLOWER MESSAGE HERE -->
+            <div class="flower-message">
+                i hope u like it, Joyce;>.
+                <br>
+                Happy Birthday again!! 💙
+                <span>🌷✨</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        // GET THE DIFFERENT SCREENS
+        const envelopeScreen = document.getElementById("envelope-screen");
+        const messageScreen = document.getElementById("message-screen");
+        const flowerScreen = document.getElementById("flower-screen");
+
+        // OPEN THE ENVELOPE
+        function openEnvelope() {
+
+            const envelope = document.getElementById("envelope");
+
+            // Add opening animation
+            envelope.classList.add("open");
+
+            // Show the birthday message after animation
+            setTimeout(function() {
+
+                envelopeScreen.classList.remove("active");
+                messageScreen.classList.add("active");
+
+            }, 900);
+
+        }
+
+        // OPEN THE FLOWER SURPRISE
+        function openFlower() {
+
+            messageScreen.classList.remove("active");
+            flowerScreen.classList.add("active");
+
+        }
+
+        // CREATE FLOATING CONFETTI AND HEARTS
+        const floatingContainer = document.getElementById("floating-elements");
+
+        const symbols = ["💙", "✨", "🎉", "⭐", "💗", "🌸"];
+
+        function createFloatingElement() {
+
+            const element = document.createElement("div");
+
+            element.classList.add("floating");
+
+            // Choose a random symbol
+            element.innerHTML = symbols[
+                Math.floor(Math.random() * symbols.length)
+            ];
+
+            // Random horizontal position
+            element.style.left = Math.random() * 100 + "vw";
+
+            // Random animation speed
+            element.style.animationDuration =
+                (Math.random() * 5 + 5) + "s";
+
+            // Random element size
+            element.style.fontSize =
+                (Math.random() * 15 + 12) + "px";
+
+            floatingContainer.appendChild(element);
+
+            // Remove the element after animation
+            setTimeout(function() {
+                element.remove();
+            }, 10000);
+
+        }
+
+        // Keep creating floating elements
+        setInterval(createFloatingElement, 500);
+
+    </script>
+
+</body>
+</html>
